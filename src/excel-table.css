@@ -1,0 +1,331 @@
+:root {
+  --border-color: #c0c0c0;
+  --header-bg: #f3f3f3;
+  --selected-bg: #cce5ff;
+  --selected-outline: #5b58eb;
+  --cell-width: 54px;
+  --cell-height: 24px;
+}
+
+.excel-table th {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.excel-container {
+  overflow: auto;
+  max-width: 100%;
+  border: 1px solid #ccc;
+  font-family: Arial, sans-serif;
+
+  .excel-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: max-content;
+
+    th,
+    td {
+      border: 1px solid var(--border-color);
+      min-width: var(--cell-width);
+      height: var(--cell-height);
+      text-align: center;
+      background-color: #fff;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+
+    td.selected {
+      background-color: #b3d8fd !important;
+      outline-offset: -2px;
+      transition: background-color 0.1s;
+    }
+
+    td.selected-row {
+      background-color: #e6f0ff;
+    }
+
+    td.selected-col,
+    th.selected-col {
+      background-color: #e6f0ff;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background-color: var(--header-bg);
+      font-weight: bold;
+      z-index: 3;
+    }
+
+    input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      padding: 2px;
+      text-align: left;
+      font-size: 10px;
+      outline: none;
+      background-color: transparent;
+    }
+  }
+
+  .excel-table td:first-child {
+    height: var(--cell-height);
+    max-height: var(--cell-height);
+    padding: 0;
+    font-size: 10px;
+    line-height: var(--cell-height);
+    text-align: center;
+    font-weight: normal;
+    background-color: var(--header-bg);
+  }
+
+  .excel-table td:first-child,
+  .excel-table th:first-child {
+    position: sticky;
+    left: 0;
+    background-color: var(--header-bg);
+    z-index: 3;
+    font-weight: normal;
+  }
+
+  .excel-table td {
+    border: 1px solid var(--border-color);
+    min-width: var(--cell-width);
+    height: var(--cell-height);
+    max-height: var(--cell-height);
+    text-align: center;
+    background-color: #fff;
+    font-size: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+    padding: 0;
+    line-height: var(--cell-height);
+  }
+
+  .sticky-col {
+    position: sticky;
+    background-color: #fff;
+    z-index: 2;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+  }
+  
+  .col-16 {
+    right: calc(var(--cell-width) * 4);
+    box-shadow: -1px 0 0 var(--border-color);
+  }
+
+  .col-17 {
+    right: calc(var(--cell-width) * 2 + 1px);
+    box-shadow: 1px 0 0 var(--border-color);
+  }
+
+  .col-18 {
+    right: calc(var(--cell-width) * 0);
+    box-shadow: 1px 0 0 var(--border-color);
+  }
+}
+
+.cell-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.cell-wrapper input {
+  width: 100%;
+  height: 100%;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+.fill-handle {
+  width: 8px;
+  height: 8px;
+  background: blue;
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  cursor: crosshair;
+  border-radius: 50%;
+}
+
+
+.selected-cell {
+  background-color: #cce5ff !important; 
+  border: #5b58eb 1px solid !important;
+}
+
+.selected-range {
+  background-color: #cce5ff !important; 
+}
+
+.excel-container .excel-table input {
+  font-size: 10px;
+}
+
+td.selected-row,
+td:first-child.selected-row {
+  background-color: #e6f0ff !important;
+}
+
+ th.selected-col {
+      background-color: #e6f0ff !important;
+    }
+
+td:first-child.selected-row {
+  background-color: var(--header-bg) !important;
+}
+
+.selected-col {
+  background-color: #e6f0ff !important;
+}
+.selected-row {
+  background-color: #e6f0ff !important;
+}
+
+.highlighted-cell {
+  background-color: #a3d0ff !important;
+}
+
+.dragged-cell {
+  background-color: #a3d0ff !important; /* or any color you like */
+}
+.dragged-cell input {
+  background-color: #ffeeba;
+  border: 1px solid #ffcc00;
+}
+/* Add this to your excel-table.css */
+
+.tooltip {
+  position: absolute;
+  top: -1.5rem;
+  right: 0;
+  background-color: #f87171; /* red-400 */
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  z-index: 20;
+  white-space: nowrap;
+}
+
+.red-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 2;
+}
+.top-right {
+  top: -28px;
+  right: 0;
+}
+
+.cell-input {
+  width: 100%;
+  padding: 4px 12px 4px 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.red-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.invalid-cell::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-top: 12px solid #e63946;
+  border-left: 12px solid transparent;
+}
+
+.invalid-cell {
+  border: 1px solid #e63946 !important;
+  position: relative;
+}
+
+.tooltip {
+  position: absolute;
+  top: -35px;
+  left: 0;
+  width: max-content;
+  background-color: #e63946;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 100;
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 10px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #e63946 transparent transparent transparent;
+}
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 4;
+}
+
+.sticky-col-left {
+  position: sticky;
+  left: 0;
+  background: white;
+  z-index: 5;
+}
+
+.sticky-col-right {
+  position: sticky;
+  right: 0;
+  background: white;
+  z-index: 5;
+}
+.block-header {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  gap: 6px; 
+  font-weight: bold;
+}
+
+.block-header input[type="checkbox"] {
+  transform: scale(1.1); 
+  cursor: pointer;
+}
+.title {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  margin-right: -70%;
+}
+.context-menu {
+  position: fixed;
+  padding: 5px;
+  z-index: 9999;
+  
+}
