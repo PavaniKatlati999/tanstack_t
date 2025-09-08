@@ -5,11 +5,9 @@ import { extent, max } from "d3-array";
 import { Group } from "@visx/group";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { Zoom } from "@visx/zoom";
-import { AreaClosed } from "@visx/shape";
-import { RectClipPath } from "@visx/clip-path";
+import { Circle } from "@visx/shape";
 
 const data = [
-  // January
   { date: new Date(2020, 0, 1), value: 10 },
   { date: new Date(2020, 0, 5), value: 18 },
   { date: new Date(2020, 0, 10), value: 25 },
@@ -17,54 +15,36 @@ const data = [
   { date: new Date(2020, 0, 20), value: 60 },
   { date: new Date(2020, 0, 25), value: 55 },
   { date: new Date(2020, 0, 31), value: 70 },
-
-  // February
   { date: new Date(2020, 1, 3), value: 80 },
   { date: new Date(2020, 1, 8), value: 65 },
   { date: new Date(2020, 1, 14), value: 90 },
   { date: new Date(2020, 1, 20), value: 100 },
   { date: new Date(2020, 1, 25), value: 85 },
   { date: new Date(2020, 1, 28), value: 95 },
-
-  // March
   { date: new Date(2020, 2, 2), value: 110 },
   { date: new Date(2020, 2, 7), value: 105 },
   { date: new Date(2020, 2, 12), value: 120 },
   { date: new Date(2020, 2, 18), value: 130 },
   { date: new Date(2020, 2, 23), value: 125 },
   { date: new Date(2020, 2, 30), value: 140 },
-
-  // April
   { date: new Date(2020, 3, 3), value: 150 },
   { date: new Date(2020, 3, 8), value: 135 },
   { date: new Date(2020, 3, 14), value: 160 },
   { date: new Date(2020, 3, 20), value: 155 },
   { date: new Date(2020, 3, 25), value: 170 },
   { date: new Date(2020, 3, 30), value: 180 },
-
-  // May
   { date: new Date(2020, 4, 5), value: 190 },
   { date: new Date(2020, 4, 10), value: 200 },
   { date: new Date(2020, 4, 15), value: 210 },
   { date: new Date(2020, 4, 20), value: 205 },
   { date: new Date(2020, 4, 25), value: 220 },
   { date: new Date(2020, 4, 31), value: 225 },
-
-  // June
   { date: new Date(2020, 5, 5), value: 230 },
   { date: new Date(2020, 5, 10), value: 240 },
   { date: new Date(2020, 5, 15), value: 245 },
   { date: new Date(2020, 5, 20), value: 250 },
   { date: new Date(2020, 5, 25), value: 255 },
   { date: new Date(2020, 5, 30), value: 260 },
-  //July
-  { date: new Date(2020, 6, 5), value: 230 },
-  { date: new Date(2020, 6, 10), value: 20 },
-  { date: new Date(2020, 6, 15), value: 245 },
-  { date: new Date(2020, 6, 20), value: 250 },
-  { date: new Date(2020, 6, 25), value: 55 },
-  { date: new Date(2020, 6, 30), value: 260 },
-  
 ];
 
 const width = 500;
@@ -73,11 +53,8 @@ const margin = { top: 20, left: 50, bottom: 40, right: 20 };
 const mainChartHeight = 180;
 const brushChartHeight = 80;
 const gap = 20;
-const top = 30
 
-
-
-function AreaChartBrush() {
+function ScatterPlot() {
   const brushRef = useRef<any>(null);
   const [filteredData, setFilteredData] = useState(data);
 
@@ -94,6 +71,7 @@ function AreaChartBrush() {
           range: [mainChartHeight - margin.bottom, margin.top],
           nice: true,
         });
+
         const brushXScale = scaleTime({
           domain: extent(data, (d) => d.date) as [Date, Date],
           range: [margin.left, width - margin.right],
@@ -122,7 +100,7 @@ function AreaChartBrush() {
         };
 
         return (
-          <div style={{marginTop:'60px'}}>
+          <div style={{ marginTop: "60px" }}>
             <svg
               width={width}
               height={mainChartHeight + brushChartHeight + gap}
@@ -136,16 +114,17 @@ function AreaChartBrush() {
               }}
               onDoubleClick={zoom.reset}
             >
+              {/* Main chart */}
               <Group transform={zoom.toString()} top={0}>
-                <AreaClosed
-                  data={filteredData}
-                  x={(d) => xScale(d.date)}
-                  y={(d) => yScale(d.value)}
-                  yScale={yScale}
-                  fill="steelblue"
-                  stroke="steelblue"
-                  strokeWidth={2}
-                />
+                {filteredData.map((d, i) => (
+                  <Circle
+                    key={i}
+                    cx={xScale(d.date)}
+                    cy={yScale(d.value)}
+                    r={4}
+                    fill="steelblue"
+                  />
+                ))}
                 <AxisLeft scale={yScale} left={margin.left} numTicks={5} />
                 <AxisBottom
                   scale={xScale}
@@ -159,16 +138,18 @@ function AreaChartBrush() {
                   }
                 />
               </Group>
+
+              {/* Brush chart */}
               <Group top={mainChartHeight + gap}>
-                <AreaClosed
-                  data={data}
-                  x={(d) => brushXScale(d.date)}
-                  y={(d) => brushYScale(d.value)}
-                  yScale={brushYScale}
-                  fill="lightgray"
-                  stroke="gray"
-                  strokeWidth={2}
-                />
+                {data.map((d, i) => (
+                  <Circle
+                    key={i}
+                    cx={brushXScale(d.date)}
+                    cy={brushYScale(d.value)}
+                    r={3}
+                    fill="lightgray"
+                  />
+                ))}
                 <AxisBottom
                   scale={brushXScale}
                   top={brushChartHeight - margin.bottom}
@@ -194,6 +175,8 @@ function AreaChartBrush() {
                 />
               </Group>
             </svg>
+
+            {/* Reset button */}
             <button
               onClick={() => {
                 setFilteredData(data);
@@ -226,4 +209,4 @@ function AreaChartBrush() {
   );
 }
 
-export default AreaChartBrush;
+export default ScatterPlot;

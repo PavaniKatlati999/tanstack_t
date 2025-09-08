@@ -6,8 +6,7 @@ import { Group } from "@visx/group";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { Zoom } from "@visx/zoom";
 import { AreaClosed } from "@visx/shape";
-import { RectClipPath } from "@visx/clip-path";
-
+import { Bar } from "@visx/shape";
 const data = [
   // January
   { date: new Date(2020, 0, 1), value: 10 },
@@ -57,14 +56,6 @@ const data = [
   { date: new Date(2020, 5, 20), value: 250 },
   { date: new Date(2020, 5, 25), value: 255 },
   { date: new Date(2020, 5, 30), value: 260 },
-  //July
-  { date: new Date(2020, 6, 5), value: 230 },
-  { date: new Date(2020, 6, 10), value: 20 },
-  { date: new Date(2020, 6, 15), value: 245 },
-  { date: new Date(2020, 6, 20), value: 250 },
-  { date: new Date(2020, 6, 25), value: 55 },
-  { date: new Date(2020, 6, 30), value: 260 },
-  
 ];
 
 const width = 500;
@@ -75,7 +66,10 @@ const brushChartHeight = 80;
 const gap = 20;
 const top = 30
 
-
+type AreaChartBrushProps = {
+  width: number;
+  height: number;
+};
 
 function AreaChartBrush() {
   const brushRef = useRef<any>(null);
@@ -104,6 +98,10 @@ function AreaChartBrush() {
           range: [brushChartHeight - margin.bottom, margin.top],
           nice: true,
         });
+
+          const barWidth =
+          (xScale(data[1].date) - xScale(data[0].date)) * 0.8; // width factor
+
 
         const initialBrushPosition = {
           start: { x: brushXScale(data[1].date) },
@@ -137,15 +135,20 @@ function AreaChartBrush() {
               onDoubleClick={zoom.reset}
             >
               <Group transform={zoom.toString()} top={0}>
-                <AreaClosed
-                  data={filteredData}
-                  x={(d) => xScale(d.date)}
-                  y={(d) => yScale(d.value)}
-                  yScale={yScale}
-                  fill="steelblue"
-                  stroke="steelblue"
-                  strokeWidth={2}
-                />
+                {filteredData.map((d, i) => {
+                  const barHeight =
+                    yScale(0) - yScale(d.value);
+                  return (
+                    <Bar
+                      key={i}
+                      x={xScale(d.date) - barWidth / 2}
+                      y={yScale(d.value)}
+                      width={barWidth}
+                      height={barHeight}
+                      fill="steelblue"
+                    />
+                  );
+                })}
                 <AxisLeft scale={yScale} left={margin.left} numTicks={5} />
                 <AxisBottom
                   scale={xScale}
@@ -160,15 +163,20 @@ function AreaChartBrush() {
                 />
               </Group>
               <Group top={mainChartHeight + gap}>
-                <AreaClosed
-                  data={data}
-                  x={(d) => brushXScale(d.date)}
-                  y={(d) => brushYScale(d.value)}
-                  yScale={brushYScale}
-                  fill="lightgray"
-                  stroke="gray"
-                  strokeWidth={2}
-                />
+                {data.map((d, i) => {
+                  const barHeight =
+                    brushYScale(0) - brushYScale(d.value);
+                  return (
+                    <Bar
+                      key={i}
+                      x={brushXScale(d.date) - barWidth / 2}
+                      y={brushYScale(d.value)}
+                      width={barWidth}
+                      height={barHeight}
+                      fill="lightgray"
+                    />
+                  );
+                })}
                 <AxisBottom
                   scale={brushXScale}
                   top={brushChartHeight - margin.bottom}
